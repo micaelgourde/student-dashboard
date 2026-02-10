@@ -5,6 +5,7 @@ const nextBtn = document.getElementById('nextBtn');
 const selectedDayElement = document.getElementById('selectedDay');
 const selectedDayNameElement = document.getElementById('selectedDayName');
 const selectedMonthYearElement = document.getElementById('selectedMonthYear');
+const addEventBtn = document.getElementById('addEventBtn');
 
 let currentDate = new Date();
 let selectedDate = new Date(); // Track selected date
@@ -83,6 +84,15 @@ nextBtn.addEventListener('click', () => {
     currentDate.setMonth(currentDate.getMonth() + 1);
     updateCalendar();
 });
+
+addEventBtn.addEventListener('click', () => {
+
+    const modalElement = document.getElementById('addEventModal');
+    const modal = new bootstrap.Modal(modalElement);
+
+    modal.show();
+});
+
 
 // Initialize calendar and sidebar on page load
 updateCalendar();

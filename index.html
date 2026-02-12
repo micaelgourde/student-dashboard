@@ -34,13 +34,10 @@
                     <hr />
                     <div class="events-section flex-grow-1 d-flex flex-column">
                         <h5 class="mb-3">Events</h5>
-                        <div id="eventsList" class="text-muted text-center py-4">
-                            No events scheduled
+                        <div id="eventsList" class="flex-grow-1 overflow-auto text-muted text-center py-4"></div>
+                        <div class="text-end mt-2">
+                            <button id="addEventBtn" class="btn btn-outline-secondary">+</button>
                         </div>
-                        <div class = "text-end mt-auto">
-                            <button id = "addEventBtn" class = "btn btn-outline-secondary">+</button>
-                        </div>
-                        <!-- Edit/Remove Events -->
                     </div>
                 </div>
             </aside>
@@ -72,7 +69,8 @@
 
         </div>
     </main>
-    
+
+    <!-- MODAL -->
     <div class="modal fade" id="addEventModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -86,20 +84,55 @@
                 <!-- Modal Body -->
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Event Name</label>
+                        <!-- Event Name -->
+                        <label class="form-label" >Event Name</label>
                         <input class="form-control" id="inputEventName">
+                        <!-- Description -->
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" rows="3" id="textareaEventDescription"></textarea>
+                        <!-- Start & End Date -->
+                        <label class="form-label">Start Date</label>
+                        <input type="datetime-local" class="form-control" id="eventStartDateTime">
+                        <label class="form-label">End Date</label>
+                        <input type="datetime-local" class="form-control" id="eventEndDateTime">
+                        <!-- Location -->
+                        <label class="form-label" >Location</label>
+                        <input class="form-control" id="inputLocation">
                     </div>
                 </div>
 
                 <!-- Modal Footer -->
                  <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-primary" id="addEventSaveBtn">Save</button>
                  </div>
 
             </div>
         </div>
     </div>
+
+    <!-- EVENT CARD TEMPLATE -->
+     <template id="eventCardTemplate">
+        <div class="card mb-2 event-card">
+            <div class="card-body p-2">
+
+                <div class="d-flex justify-content-between align-items-center event-header">
+                    <div>
+                        <h6 class="card-title mb-0 event-title"></h6>
+                        <small class="text-muted event-time"></small>
+                    </div>
+                    <span class="chevron">⌄</span>
+                </div>
+
+                <div class="collapse mt-2 event-collapse">
+                    <p class="small mb-1 event-description"></p>
+                    <p class="small text-muted mb-1 event-location"></p>
+                    <p class="small text-muted mb-0 event-fulltime"></p>
+                </div>
+
+            </div>
+        </div>
+    </template>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="src/js/app.js" defer></script>
 </body>

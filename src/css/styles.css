@@ -35,7 +35,11 @@ body {
 
 .events-section {
     margin-top: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     position: relative;
+    min-height: 0;
 }
 
 .events-section h5 {
@@ -171,4 +175,54 @@ body {
 
 .modal-footer {
     border-top: 1px solid #2a2a2a;
+}
+
+.has-event::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background: #0d6efd;
+  border-radius: 50%;
+}
+.events-section .card {
+    background-color: #2a2a2a;
+    border: 1px solid #3a3a3a;
+}
+
+.events-section .card-title {
+    color: #e5e7eb;
+    font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+.events-section .card-text {
+    color: #9ca3af;
+}
+
+#eventsList {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 4px;
+    min-height: 0;
+    padding-bottom: 60px;
+}
+
+#eventsList::-webkit-scrollbar {
+    width: 8px;
+}
+
+#eventsList::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+#eventsList::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 4px;
+}
+
+#eventsList::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
 }

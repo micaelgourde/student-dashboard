@@ -7,11 +7,15 @@ const selectedDayNameElement = document.getElementById('selectedDayName');
 const selectedMonthYearElement = document.getElementById('selectedMonthYear');
 const addEventBtn = document.getElementById('addEventBtn');
 const addEventSaveBtn = document.getElementById('addEventSaveBtn');
+const editEventSaveBtn = document.getElementById('editEventSaveBtn');
+const deleteEventConfirmBtn = document.getElementById('deleteEventConfirmBtn');
 
 let events = JSON.parse(localStorage.getItem('events')) || [];
 
 let currentDate = new Date();
 let selectedDate = new Date(); // Track selected date
+let editingEventId = null; // Track which event is being edited
+let deletingEventId = null; // Track which event is being deleted
 
 const updateCalendar = () => {
     const currentYear = currentDate.getFullYear();
@@ -129,16 +133,89 @@ addEventSaveBtn.addEventListener('click', () => {
     const eventLocation = document.getElementById('inputLocation');
     const startDateTime = document.getElementById('eventStartDateTime');
     const endDateTime = document.getElementById('eventEndDateTime');
+
+    let isValid = true;
+    
+    const nameError = document.getElementById('nameError');
+    const startError = document.getElementById('startError');
+    const endError = document.getElementById('endError');
+    const endAfterStartError = document.getElementById('endAfterStartError');
+    
+    // Reset errors
+    nameError.classList.remove('show');
+    startError.classList.remove('show');
+    endError.classList.remove('show');
+    endAfterStartError.classList.remove('show');
+    
+    // Check event name
+    if (!eventName.value.trim()) {
+        nameError.textContent = 'Event name is required';
+        nameError.classList.add('show');
+        isValid = false;
+    } else if (eventName.value.trim().length > 100) {
+        nameError.textContent = 'Event name must be less than 100 characters';
+        nameError.classList.add('show');
+        isValid = false;
+    }
+    
+    // Check description length
+    if (eventDescription.value.length > 500) {
+        nameError.textContent = 'Description must be less than 500 characters';
+        nameError.classList.add('show');
+        isValid = false;
+    }
+    
+    // Check location length
+    if (eventLocation.value.length > 200) {
+        nameError.textContent = 'Location must be less than 200 characters';
+        nameError.classList.add('show');
+        isValid = false;
+    }
+    
+    // Check start time
+    if (!startDateTime.value) {
+        startError.classList.add('show');
+        isValid = false;
+    }
+    
+    // Check end time
+    if (!endDateTime.value) {
+        endError.classList.add('show');
+        isValid = false;
+    } else if (startDateTime.value) {
+        const start = new Date(startDateTime.value);
+        const end = new Date(endDateTime.value);
+        
+        if (end <= start) {
+            endAfterStartError.textContent = 'End date must be after start date';
+            endAfterStartError.classList.add('show');
+            isValid = false;
+        } else {
+            const daysDiff = (end - start) / (1000 * 60 * 60 * 24);
+            if (daysDiff > 30) {
+                endAfterStartError.textContent = 'Event cannot be longer than 30 days';
+                endAfterStartError.classList.add('show');
+                isValid = false;
+            }
+        }
+    }
+    
+    if (!isValid) return;
+    
+
     const newEvent = {
         id: Date.now(),
-        title: eventName.value,
-        description: eventDescription.value,
-        location: eventLocation.value,
+        title: eventName.value.trim(),
+        description: eventDescription.value.trim(),
+        location: eventLocation.value.trim(),
         start: startDateTime.value,
         end: endDateTime.value
     }
     events.push(newEvent);
     localStorage.setItem('events', JSON.stringify(events));
+
+    selectedDate = new Date(startDateTime.value);
+    currentDate = new Date(startDateTime.value); 
 
     // Close Modal
     const modalElement = document.getElementById('addEventModal');
@@ -152,6 +229,130 @@ addEventSaveBtn.addEventListener('click', () => {
     startDateTime.value = '';
     endDateTime.value = '';
     updateSidebar();
+    updateCalendar();
+});
+
+editEventSaveBtn.addEventListener('click', () => {
+    // Save edited event
+    const eventName = document.getElementById('inputEditEventName');
+    const eventDescription = document.getElementById('textareaEditEventDescription');
+    const eventLocation = document.getElementById('inputEditLocation');
+    const startDateTime = document.getElementById('editEventStartDateTime');
+    const endDateTime = document.getElementById('editEventEndDateTime');
+
+    let isValid = true;
+    
+    const nameError = document.getElementById('editNameError');
+    const startError = document.getElementById('editStartError');
+    const endError = document.getElementById('editEndError');
+    const endAfterStartError = document.getElementById('editEndAfterStartError');
+    
+    // Reset errors
+    nameError.classList.remove('show');
+    startError.classList.remove('show');
+    endError.classList.remove('show');
+    endAfterStartError.classList.remove('show');
+    
+    // Check event name
+    if (!eventName.value.trim()) {
+        nameError.textContent = 'Event name is required';
+        nameError.classList.add('show');
+        isValid = false;
+    } else if (eventName.value.trim().length > 100) {
+        nameError.textContent = 'Event name must be less than 100 characters';
+        nameError.classList.add('show');
+        isValid = false;
+    }
+    
+    // Check description length
+    if (eventDescription.value.length > 500) {
+        nameError.textContent = 'Description must be less than 500 characters';
+        nameError.classList.add('show');
+        isValid = false;
+    }
+    
+    // Check location length
+    if (eventLocation.value.length > 200) {
+        nameError.textContent = 'Location must be less than 200 characters';
+        nameError.classList.add('show');
+        isValid = false;
+    }
+    
+    // Check start time
+    if (!startDateTime.value) {
+        startError.classList.add('show');
+        isValid = false;
+    }
+    
+    // Check end time
+    if (!endDateTime.value) {
+        endError.classList.add('show');
+        isValid = false;
+    } else if (startDateTime.value) {
+        const start = new Date(startDateTime.value);
+        const end = new Date(endDateTime.value);
+        
+        if (end <= start) {
+            endAfterStartError.textContent = 'End date must be after start date';
+            endAfterStartError.classList.add('show');
+            isValid = false;
+        } else {
+            const daysDiff = (end - start) / (1000 * 60 * 60 * 24);
+            if (daysDiff > 30) {
+                endAfterStartError.textContent = 'Event cannot be longer than 30 days';
+                endAfterStartError.classList.add('show');
+                isValid = false;
+            }
+        }
+    }
+    
+    if (!isValid) return;
+
+    // Find and update the event
+    const eventIndex = events.findIndex(e => e.id === editingEventId);
+    if (eventIndex !== -1) {
+        events[eventIndex] = {
+            id: editingEventId,
+            title: eventName.value.trim(),
+            description: eventDescription.value.trim(),
+            location: eventLocation.value.trim(),
+            start: startDateTime.value,
+            end: endDateTime.value
+        };
+        localStorage.setItem('events', JSON.stringify(events));
+    }
+
+    // Close Modal
+    const modalElement = document.getElementById('editEventModal');
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    modal.hide();
+
+    // Clear fields
+    eventName.value = '';
+    eventDescription.value = '';
+    eventLocation.value = '';
+    startDateTime.value = '';
+    endDateTime.value = '';
+    editingEventId = null;
+
+    updateSidebar();
+    updateCalendar();
+});
+
+deleteEventConfirmBtn.addEventListener('click', () => {
+    // Delete the event
+    events = events.filter(e => e.id !== deletingEventId);
+    localStorage.setItem('events', JSON.stringify(events));
+
+    // Close Modal
+    const modalElement = document.getElementById('deleteEventModal');
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    modal.hide();
+
+    deletingEventId = null;
+
+    updateSidebar();
+    updateCalendar();
 });
 
 function displayEvents(eventsForDay) {
@@ -211,6 +412,42 @@ function displayEvents(eventsForDay) {
         header.setAttribute('data-bs-target', `#${collapseId}`);
         header.setAttribute('role', 'button');
         header.style.cursor = 'pointer';
+        
+        // Add edit button functionality
+        const editBtn = clone.querySelector('.event-edit-btn');
+        editBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent collapse toggle
+            
+            editingEventId = event.id;
+            
+            // Populate edit modal with event data
+            document.getElementById('inputEditEventName').value = event.title;
+            document.getElementById('textareaEditEventDescription').value = event.description || '';
+            document.getElementById('inputEditLocation').value = event.location || '';
+            document.getElementById('editEventStartDateTime').value = event.start;
+            document.getElementById('editEventEndDateTime').value = event.end;
+            
+            // Open edit modal
+            const modalElement = document.getElementById('editEventModal');
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        });
+
+        // Add delete button functionality
+        const deleteBtn = clone.querySelector('.event-delete-btn');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent collapse toggle
+            
+            deletingEventId = event.id;
+            
+            // Set event name in confirmation modal
+            document.getElementById('deleteEventName').textContent = event.title;
+            
+            // Open delete confirmation modal
+            const modalElement = document.getElementById('deleteEventModal');
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        });
         
         eventsList.appendChild(clone);
     });

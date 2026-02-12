@@ -188,14 +188,67 @@ body {
   background: #0d6efd;
   border-radius: 50%;
 }
+
 .events-section .card {
     background-color: #2a2a2a;
     border: 1px solid #3a3a3a;
 }
 
 .events-section .card-title {
-    color: #e5e7eb;
-    font-size: clamp(0.875rem, 2vw, 1rem);
+    color: #f3f4f6;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.event-time {
+    color: #06b6d4 !important;
+    font-weight: 500;
+}
+
+.event-description {
+    color: #d1d5db !important;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.event-location {
+    color: #9ca3af !important;
+    font-size: 0.875rem;
+}
+
+.event-fulltime {
+    color: #6b7280 !important;
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+.chevron {
+    color: #9ca3af;
+    font-size: 1.2rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+    width: 20px;
+    font-weight: 300;
+    letter-spacing: 2px;
+}
+
+.event-header[aria-expanded="true"] .chevron {
+    transform: rotate(180deg);
+}
+
+.validation-error {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: none;
+}
+
+.validation-error.show {
+    display: block;
+}
+
+.event-header[aria-expanded="true"] .chevron {
+    transform: rotate(180deg);
 }
 
 .events-section .card-text {
@@ -225,4 +278,17 @@ body {
 
 #eventsList::-webkit-scrollbar-thumb:hover {
     background: #6b7280;
+}
+
+.event-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.event-header > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
